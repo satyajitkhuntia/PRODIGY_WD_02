@@ -1,0 +1,184 @@
+<html>
+<head>
+  <style>
+    body {
+      background-color: lightblue;
+      font-family: Arial, sans-serif;
+    }
+
+    #stopwatch {
+      margin: 20px auto;
+      width: 300px;
+      height: 300px;
+      border: 10px solid black;
+      border-radius: 50%;
+      position: relative;
+    }
+
+    #timer {
+      font-size: 48px;
+      text-align: center;
+      line-height: 300px;
+    }
+
+    #start, #pause, #reset, #lap {
+      width: 100px;
+      height: 50px;
+      border: none;
+      border-radius: 10px;
+      font-size: 24px;
+      color: white;
+      cursor: pointer;
+    }
+
+    #start {
+      background-color: green;
+    }
+
+    #pause {
+      background-color: red;
+    }
+
+    #reset {
+      background-color: orange;
+    }
+
+    #lap {
+      background-color: purple;
+    }
+
+    #buttons {
+      margin: 20px auto;
+      width: 420px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    #laps {
+      margin: 20px auto;
+      width: 420px;
+      list-style: none;
+    }
+
+    #laps li {
+      margin: 10px 0;
+      padding: 10px;
+      border: 1px solid black;
+      font-size: 24px;
+    }
+  </style>
+</head>
+<body>
+  <div id="stopwatch">
+    <div id="timer">00:00:00</div>
+  </div>
+  <div id="buttons">
+    <button id="start">Start</button>
+    <button id="pause">Pause</button>
+    <button id="reset">Reset</button>
+    <button id="lap">Lap</button>
+  </div>
+  <ul id="laps"></ul>
+  <script>
+    var timer = document.getElementById("timer");
+    var start = document.getElementById("start");
+    var pause = document.getElementById("pause");
+    var reset = document.getElementById("reset");
+    var lap = document.getElementById("lap");
+    var laps = document.getElementById("laps");
+
+
+    var hours = 0;
+    var minutes = 0;
+    var seconds = 0;
+    var milliseconds = 0;
+
+
+    var interval;
+
+    function formatTime() {
+      var h = hours < 10 ? "0" + hours : hours;
+      var m = minutes < 10 ? "0" + minutes : minutes;
+      var s = seconds < 10 ? "0" + seconds : seconds;
+      var ms = milliseconds < 10 ? "00" + milliseconds : milliseconds < 100 ? "0" + milliseconds : milliseconds;
+
+
+      return h + ":" + m + ":" + s + "." + ms;
+    }
+
+
+    function updateTime() {
+
+      milliseconds += 10;
+
+
+      if (milliseconds == 1000) {
+        seconds++;
+        milliseconds = 0;
+      }
+
+      if (seconds == 60) {
+        minutes++;
+        seconds = 0;
+      }
+
+
+      if (minutes == 60) {
+        hours++;
+        minutes = 0;
+      }
+
+
+      timer.innerHTML = formatTime();
+    }
+
+    function startTimer() {
+
+      if (!interval) {
+        interval = setInterval(updateTime, 10);
+      }
+    }
+
+    function pauseTimer() {
+
+      if (interval) {
+        clearInterval(interval);
+        interval = null;
+      }
+    }
+
+
+    function resetTimer() {
+
+      pauseTimer();
+
+
+      hours = 0;
+      minutes = 0;
+      seconds = 0;
+      milliseconds = 0;
+
+
+      timer.innerHTML = formatTime();
+
+      laps.innerHTML = "";
+    }
+
+
+    function recordLap() {
+
+      if (interval) {
+        var li = document.createElement("li");
+        li.innerHTML = formatTime();
+        laps.appendChild(li);
+      }
+    }
+
+
+    start.addEventListener("click", startTimer);
+    pause.addEventListener("click", pauseTimer);
+    reset.addEventListener("click", resetTimer);
+    lap.addEventListener("click", recordLap);
+  </script>
+</body>
+</html>
